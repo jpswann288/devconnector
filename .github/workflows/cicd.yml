@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [closed]
+
+jobs:
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: self-hosted
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build and Deploy
+        run: |
+          cd /home/ubuntu/devconnector
+          git pull origin main
+          npm install
+          npm run build --production
+          sudo cp -R dist/ /var/www/vhosts/frontend/
+          sudo service nginx restart
