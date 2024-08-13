@@ -4,11 +4,12 @@
   "description": "Social network for devs",
   "main": "server.js",
   "scripts": {
-    "start": "node server",
-    "server": "nodemon server",
+    "start": "node server.js",
+    "server": "nodemon server.js",
     "client": "npm start --prefix client",
+    "build": "npm run build --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "prod": "npm run build && node server.js"
   },
   "author": "jpswann",
   "license": "MIT",
@@ -21,6 +22,7 @@
     "gravatar": "^1.8.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.2",
+    "react-scripts": "^5.0.1",
     "request": "^2.88.2"
   },
   "devDependencies": {
