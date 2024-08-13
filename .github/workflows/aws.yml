@@ -20,7 +20,7 @@ jobs:
 
   deploy:
     needs: build
-    run-on: self-hosted
+    runs-on: self-hosted
     steps:
       - name: Pull Image From Docker Hub
         run: docker pull jpswann0208/jpswann-app:latest
