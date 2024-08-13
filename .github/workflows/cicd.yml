@@ -1,26 +1,28 @@
-name: Deploy
+name: Deploy Node Application
 
 on:
   push:
     branches:
       - master
-  pull_request:
-    types: [closed]
 
 jobs:
-  deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: self-hosted
-
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build Docker Image
+        run: docker build -t jpswann0208/jpswann-app .
+      - name: Publish Image To Docker Hub
+        run: docker push jpswann0208/jpswann-app:latest
 
-      - name: Build and Deploy
-        run: |
-          cd /home/ubuntu/devconnector
-          git pull origin main
-          npm install
-          npm run build --production
-          sudo cp -R dist/ /var/www/vhosts/frontend/
-          sudo service nginx restart
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull Image From Docker Hub
+        run: docker pull jpswann0208/jpswann-app:latest
+      - name: Run Docker Container
+        run: docker run -d -p 8080:8080 --name jpswann-app-container -e MONGO_URI='${{ secrets.MONGO_URI }}' jpswann0208/jpswann-app
