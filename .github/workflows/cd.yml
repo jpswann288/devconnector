@@ -23,6 +23,5 @@ jobs:
           -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
           -p 8080:8080 \
           --name jpswann-app-container jpswann0208/jpswann-app
-
       - name: Clean up unused Docker images
         run: sudo docker image prune -f
