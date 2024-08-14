@@ -25,4 +25,4 @@ jobs:
       - name: Pull Image From Docker Hub
         run: docker pull jpswann0208/jpswann-app:latest
       - name: Run Docker Container
-        run: docker run -d -p 8080:8080 --name jpswann-app-container -e MONGO_URI='${{ secrets.MONGO_URI }}' jpswann0208/jpswann-app
+        run: docker run -d -p 80:80 --name jpswann-app-container -e MONGO_URI='${{ secrets.MONGO_URI }}' jpswann0208/jpswann-app
