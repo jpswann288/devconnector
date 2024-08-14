@@ -17,7 +17,8 @@ jobs:
         run: sudo docker rm -f jpswann-app-container || true
 
       - name: Run Docker Container
-        run: sudo docker run -d -t -i -e MONGO_URI=${{ secrets.MONGO_URI }} \
+        run: sudo docker run -d -t -i \
+          -e MONGO_URI=${{ secrets.MONGO_URI }} \
           -e GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }} \
           -e GH_SECRET=${{ secrets.GH_SECRET }} \
           -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
