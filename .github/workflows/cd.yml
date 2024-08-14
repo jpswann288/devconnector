@@ -10,6 +10,13 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
+      - name: Create .env File
+        run: |
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
+          echo "GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" >> .env
+          echo "GH_SECRET=${{ secrets.GH_SECRET }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+
       - name: Pull Docker Image
         run: sudo docker pull jpswann0208/jpswann-app:latest
 
@@ -17,12 +24,7 @@ jobs:
         run: sudo docker rm -f jpswann-app-container || true
 
       - name: Run Docker Container
-        run: sudo docker-compose up -d
-        env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}
-          GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
-          GH_SECRET: ${{ secrets.GH_SECRET }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: sudo docker run --env-file .env -d -p 8080:8080 --name jpswann-app-container jpswann0208/jpswann-app
 
       - name: Clean up unused Docker images
         run: sudo docker image prune -f
