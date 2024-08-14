@@ -4,6 +4,6 @@ WORKDIR /usr/src/devconnector
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build --prefix client || (echo "Build failed" && exit 1)
+RUN cd client && npm install && npm run build
 EXPOSE 8080
 CMD [ "node", "server.js"]
