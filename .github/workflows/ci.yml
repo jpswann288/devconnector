@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: CI Pipeline
 
 on:
   push:
@@ -10,6 +10,7 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v3
+
       - name: Login to docker hub
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
