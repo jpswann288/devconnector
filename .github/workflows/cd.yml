@@ -7,9 +7,12 @@ on:
       - completed
 
 jobs:
-  build:
+  deploy:
     runs-on: self-hosted
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
       - name: Pull Docker Image
         run: sudo docker pull jpswann0208/jpswann-app:latest
 
@@ -17,13 +20,14 @@ jobs:
         run: sudo docker rm -f jpswann-app-container || true
 
       - name: Run Docker Container
-        run: sudo docker run -d -p 8080:8080 \
-          --name jpswann-app-container \
-          -e MONGO_URI=${{ secrets.MONGO_URI }} \
-          -e GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }} \
-          -e GH_SECRET=${{ secrets.GH_SECRET }} \
-          -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-          jpswann0208/jpswann-app
+        run: |
+          sudo docker run -d -p 8080:8080 \
+            --name jpswann-app-container \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            -e GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }} \
+            -e GH_SECRET=${{ secrets.GH_SECRET }} \
+            -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+            jpswann0208/jpswann-app
 
-      - name: Clean up unused Docker images
+      - name: Clean Up Unused Docker Images
         run: sudo docker image prune -f
