@@ -18,10 +18,10 @@ jobs:
 
       - name: Run Docker Container
         run: sudo docker run -d -t -i \
-          -e MONGO_URI=${{ secrets.MONGO_URI }} \
-          -e GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }} \
-          -e GH_SECRET=${{ secrets.GH_SECRET }} \
-          -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+          --env MONGO_URI=${{ secrets.MONGO_URI }} \
+          --env GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }} \
+          --env GH_SECRET=${{ secrets.GH_SECRET }} \
+          --env JWT_SECRET=${{ secrets.JWT_SECRET }} \
           -p 8080:8080 \
           --name jpswann-app-container jpswann0208/jpswann-app
       - name: Clean up unused Docker images
