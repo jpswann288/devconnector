@@ -7,7 +7,7 @@ on:
       - completed
 
 jobs:
-  deploy:
+  build:
     runs-on: self-hosted
     steps:
       - name: Pull Docker Image
@@ -15,7 +15,14 @@ jobs:
 
       - name: Delete Old Docker Container
         run: sudo docker rm -f jpswann-app-container || true
+
       - name: Run Docker Container
-        run: sudo docker run -d -t -i -e MONGO_URI=${{ secrets.MONGO_URI }} -e GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }} -e GH_SECRET=${{ secrets.GH_SECRET }} -e JWT_SECRET=${{ secrets.JWT_SECRET }} -p 8080:8080 --name jpswann-app-container jpswann0208/jpswann-app
+        run: sudo docker-compose up -d
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+          GH_SECRET: ${{ secrets.GH_SECRET }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
       - name: Clean up unused Docker images
         run: sudo docker image prune -f
