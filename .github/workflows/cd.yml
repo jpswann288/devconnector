@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: Pull Docker Image
         run: sudo docker pull jpswann0208/jpswann-app:latest
+
       - name: Delete Old Docker Container
         run: sudo docker rm -f jpswann-app-container || true
       - name: Run Docker Container
