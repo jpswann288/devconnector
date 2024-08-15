@@ -5,5 +5,9 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 RUN cd client && npm install --legacy-peer-deps && npm run build
+
+FROM nginx:alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 8080
-CMD [ "node", "server.js"]
+CMD ["nginx", "-g", "daemon off;"]
