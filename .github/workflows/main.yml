@@ -23,6 +23,7 @@ jobs:
         run: |
           echo "WEBSITE_IMAGE=$(echo ${{env.WEBSITE_IMAGE}} )" >> $GITHUB_ENV
           echo "NGINX_IMAGE=$(echo ${{env.NGINX_IMAGE}} )" >> $GITHUB_ENV
+
       - name: Log in to GitHub Packages
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -32,9 +33,11 @@ jobs:
         run: |
           docker pull ${{ env.WEBSITE_IMAGE }} || true
           docker pull ${{ env.NGINX_IMAGE }} || true
+
       - name: Build images
         run: |
           docker-compose -f docker-compose.ci.yml build
+
       - name: Push images
         run: |
           docker push ${{ env.WEBSITE_IMAGE }}
