@@ -1,0 +1,46 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+      - name: Build Docker Image
+        run: docker build -t jpswann0208/jpswann-app .
+
+      - name: Publish Image To Docker Hub
+        run: docker push jpswann0208/jpswann-app:latest
+
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Create .env File
+        run: |
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
+          echo "GH_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" >> .env
+          echo "GH_SECRET=${{ secrets.GH_SECRET }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+
+      - name: Pull Docker Image
+        run: sudo docker pull jpswann0208/jpswann-app:latest
+
+      - name: Delete Old Docker Container
+        run: sudo docker rm -f jpswann-app-container || true
+
+      - name: Run Docker Container
+        run: sudo docker run --env-file .env -d -p 8080:80 --name jpswann-app-container jpswann0208/jpswann-app
+
+      - name: Clean up unused Docker images
+        run: sudo docker image prune -f
