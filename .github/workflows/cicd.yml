@@ -55,7 +55,7 @@ jobs:
           sudo docker rm jpswann-app-container || true
 
       - name: Run Docker Container
-        run: sudo docker run --env-file .env -d -p 3000:80 --name jpswann-app-container jpswann0208/jpswann-app
+        run: sudo docker run --env-file .env -d -p 8080:80 --name jpswann-app-container jpswann0208/jpswann-app
 
       - name: Clean up unused Docker resources
         run: |
