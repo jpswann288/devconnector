@@ -11,6 +11,18 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22.x"
+
+      - name: Install Dependencies and Build
+        run: |
+          npm install
+          cd client
+          npm install --legacy-peer-deps
+          npm run build
+
       - name: Login to Docker Hub
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -37,23 +49,13 @@ jobs:
       - name: Pull Docker Image
         run: sudo docker pull jpswann0208/jpswann-app:latest
 
-      - name: Delete Old Docker Container
-        run: sudo docker rm -f jpswann-app-container || true
+      - name: Stop and Remove Old Container
+        run: |
+          sudo docker stop jpswann-app-container || true
+          sudo docker rm jpswann-app-container || true
 
       - name: Run Docker Container
         run: sudo docker run --env-file .env -d -p 3000:80 --name jpswann-app-container jpswann0208/jpswann-app
-
-      - name: Wait for the application to start
-        run: |
-          for i in {1..10}; do
-            if sudo docker exec jpswann-app-container curl -f http://172.17.0.2; then
-              echo "Application is up!"
-              exit 0
-            fi
-            echo "Waiting for the application to start..."
-            sleep 10
-          done
-          exit 1
 
       - name: Clean up unused Docker resources
         run: |
