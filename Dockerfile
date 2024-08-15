@@ -10,5 +10,4 @@ FROM nginx:alpine
 COPY --from=build /usr/src/app/client/build /usr/share/nginx/html
 
 EXPOSE 80
-
-CMD ["/usr/local/bin/run.sh"]
+CMD ["nginx", "-g", "daemon off;"]
