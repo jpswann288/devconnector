@@ -7,11 +7,5 @@ COPY . .
 WORKDIR /app/client
 RUN npm install --legacy-peer-deps --silent
 RUN npm run build
-
-FROM nginx:alpine
-WORKDIR /usr/share/nginx/html
-RUN rm -rf *
-COPY --from=build /app/client/build .
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000
+CMD ["node", "server.js"]
