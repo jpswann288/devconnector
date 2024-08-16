@@ -7,7 +7,9 @@ COPY . .
 RUN cd client && npm install -g --legacy-peer-deps --silent && npm run build
 
 FROM nginx:alpine
-COPY --from=build /usr/src/app/client/build /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
+RUN rm -rf *
+COPY --from=build /usr/src/app/client/build .
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d
 
