@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install --silent
 COPY . .
-RUN cd client && npm install -g --legacy-peer-deps --silent && npm run build
+RUN cd client && npm install --legacy-peer-deps --silent && npm run build
 
 FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
