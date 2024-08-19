@@ -39,12 +39,12 @@ jobs:
 
       - name: Pull Docker Images
         run: |
-          docker compose pull
+          docker-compose pull
 
       - name: Stop and Remove Old Containers
         run: |
-          docker compose down
+          docker-compose down
 
       - name: Run Docker Containers
         run: |
-          docker compose up -d
+          docker-compose up -d
