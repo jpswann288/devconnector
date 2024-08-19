@@ -37,14 +37,10 @@ jobs:
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
           echo "PORT=8000" >> .env
 
-      - name: Pull Docker Images
-        run: |
-          docker-compose pull
-
       - name: Stop and Remove Old Containers
         run: |
           docker-compose down
 
       - name: Run Docker Containers
         run: |
-          docker-compose up -d
+          docker-compose up -d --build
