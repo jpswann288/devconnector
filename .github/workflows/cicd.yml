@@ -48,7 +48,6 @@ jobs:
       - name: Deploy Application via SSH
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-            cd devconnector
             docker-compose pull
             docker-compose down
             docker-compose up -d --build
