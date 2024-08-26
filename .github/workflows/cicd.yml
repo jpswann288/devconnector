@@ -40,17 +40,18 @@ jobs:
           echo "PORT=8000" >> .env
 
       - name: Setup SSH
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
 
-      - name: Deploy Application via SSH
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-            git clone https://github.com/jpswann288/devconnector.git
-            cd ${{ secrets.WORK_DIR }}
-            docker compose pull
-            docker compose down
-            docker compose up -d --build
-            exit
+            cd devconnector
+
+            sudo IMAGE_TAG=$((${{github.run_number }}+1)) docker-compose up -d --scale frontend=2 --scale backend=2 --no-recreate
+            sudo docker rm -f $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep frontend | tail -n 1) 
+            sudo docker rm -f $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep backend | tail -n 1)
+
+            sudo docker exec $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep nginx) nginx -s reload
