@@ -1,5 +1,20 @@
 services:
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"
+      - "3000:3000"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+
+    depends_on:
+      - frontend
+    restart: always
+    networks:
+      - net
+
   backend:
+    image: jpswann0208/my-backend${IMAGE_TAG}
     build:
       context: ./
       dockerfile: Dockerfile.backend
@@ -14,18 +29,36 @@ services:
       - GH_SECRET=${GH_SECRET}
     depends_on:
       - mongo
+    restart: always
+    networks:
+      - net
 
   frontend:
+    image: jpswann0208/my-frontend${IMAGE_TAG}
     build:
       context: ./client
       dockerfile: Dockerfile.frontend
     ports:
       - 3000:80
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - net
 
   mongo:
     image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
     volumes:
       - mongo-data:/data/db
+    networks:
+      - net
 
 volumes:
   mongo-data:
+
+networks:
+  net:
+    external: true
