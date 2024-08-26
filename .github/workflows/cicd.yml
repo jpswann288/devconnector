@@ -19,12 +19,12 @@ jobs:
 
       - name: Build and Push Backend Docker Image
         run: |
-          docker build -t jpswann0208/my-backend:latest ./
+          docker build -t jpswann0208/my-backend:latest -f ./Dockerfile.backend ./
           docker push jpswann0208/my-backend:latest
 
       - name: Build and Push Frontend Docker Image
         run: |
-          docker build -t jpswann0208/my-frontend:latest ./client
+          docker build -t jpswann0208/my-frontend:latest -f ./client/Dockerfile.frontend ./client
           docker push jpswann0208/my-frontend:latest
 
   deploy:
