@@ -3,21 +3,20 @@ services:
     image: nginx
     ports:
       - "80:80"
-      - "8000:8000"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-
     depends_on:
       - frontend
+      - backend
     restart: always
     networks:
       - net
 
   backend:
-    image: jpswann0208/my-backend${IMAGE_TAG}
     build:
       context: ./
       dockerfile: Dockerfile.backend
+    image: jpswann0208/my-backend${IMAGE_TAG}
     environment:
       - NODE_ENV=${NODE_ENV}
       - MONGO_URI=${MONGO_URI}
@@ -25,6 +24,8 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - GH_CLIENT_ID=${GH_CLIENT_ID}
       - GH_SECRET=${GH_SECRET}
+    expose:
+      - 8000
     depends_on:
       - mongo
     restart: always
@@ -32,10 +33,12 @@ services:
       - net
 
   frontend:
-    image: jpswann0208/my-frontend${IMAGE_TAG}
     build:
       context: ./client
       dockerfile: Dockerfile.frontend
+    image: jpswann0208/my-frontend${IMAGE_TAG}
+    expose:
+      - 3000
     depends_on:
       - backend
     restart: always
