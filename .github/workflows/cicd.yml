@@ -48,7 +48,8 @@ jobs:
       - name: Deploy Application via SSH
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-            ls
+            git clone https://github.com/jpswann288/devconnector.git
+            cd ${{ secrets.WORK_DIR }}
             docker compose pull
             docker compose down
             docker compose up -d --build
