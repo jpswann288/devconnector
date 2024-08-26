@@ -54,7 +54,6 @@ services:
 
 volumes:
   mongo-data:
-
 networks:
   net:
     external: true
